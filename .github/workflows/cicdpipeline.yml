@@ -27,7 +27,7 @@ jobs:
     # Step 3: Check if package.json exists
     - name: Check if package.json exists
       run: |
-        if [ ! -f C:\Users\khush\OneDrive - Conestoga College\Desktop\astha\4th sem\CICD\Final Project\Final_Project_CICD\simple-node-api/package.json ]; then
+        if [ ! -f ./simple-node-api/package.json ]; then
           echo "package.json not found in the root directory!"
           exit 1
         fi
@@ -39,11 +39,13 @@ jobs:
 
     # Step 5: Run tests
     - name: Run tests
-      run: npm test  # Replace with your test command (e.g., jest, mocha)
+      run: cd simple-node-api
+           npm test  # Replace with your test command (e.g., jest, mocha)
 
     # Step 6: Build the application (if necessary)
     - name: Build application
-      run: npm run build  # If you have a build step, e.g., React, Webpack, etc.
+      run: cd simple-node-api
+           npm run build  # If you have a build step, e.g., React, Webpack, etc.
 
     # Step 7: Deploy to EC2 (via SSH)
     - name: Deploy to EC2
