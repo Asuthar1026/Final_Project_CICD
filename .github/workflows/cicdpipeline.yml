@@ -24,19 +24,27 @@ jobs:
       with:
         node-version: '14'  # Use the version of Node.js you need
 
-    # Step 3: Install dependencies
+    # Step 3: Check if package.json exists
+    - name: Check if package.json exists
+      run: |
+        if [ ! -f package.json ]; then
+          echo "package.json not found in the root directory!"
+          exit 1
+        fi
+
+    # Step 4: Install dependencies
     - name: Install dependencies
       run: npm install
 
-    # Step 4: Run tests
+    # Step 5: Run tests
     - name: Run tests
       run: npm test  # Replace with your test command (e.g., jest, mocha)
 
-    # Step 5: Build the application (if necessary)
+    # Step 6: Build the application (if necessary)
     - name: Build application
       run: npm run build  # If you have a build step, e.g., React, Webpack, etc.
 
-    # Step 6: Deploy to EC2 (via SSH)
+    # Step 7: Deploy to EC2 (via SSH)
     - name: Deploy to EC2
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
