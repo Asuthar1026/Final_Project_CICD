@@ -24,30 +24,27 @@ jobs:
       with:
         node-version: '14'  # Use the version of Node.js you need
 
-    # Step 3: Check if package.json exists inside the 'simple-node-api' directory
-    - name: Check if package.json exists in the 'simple-node-api' directory
+    # Step 3: Check if package.json exists in the root directory
+    - name: Check if package.json exists in the root directory
       run: |
-        if [ ! -f ./simple-node-api/package.json ]; then
-          echo "package.json not found in the 'simple-node-api' directory!"
+        if [ ! -f ./package.json ]; then
+          echo "package.json not found in the root directory!"
           exit 1
         fi
 
-    # Step 4: Install dependencies (inside the 'simple-node-api' subfolder)
+    # Step 4: Install dependencies (now in the root directory)
     - name: Install dependencies
       run: |
-        cd simple-node-api  # Change directory to the subfolder where package.json is located
-        npm install  # Install dependencies
+        npm install  # Install dependencies in the root directory
 
-    # Step 5: Run tests (inside the 'simple-node-api' subfolder)
+    # Step 5: Run tests (now in the root directory)
     - name: Run tests
       run: |
-        cd simple-node-api  # Change directory to the subfolder
         npm test  # Replace with your test command (e.g., jest, mocha)
 
     # Step 6: Build the application (if necessary)
     - name: Build application
       run: |
-        cd simple-node-api  # Change directory to the subfolder
         npm run build  # If you have a build step, e.g., React, Webpack, etc.
 
     # Step 7: Deploy to EC2 (via SSH)
@@ -67,5 +64,4 @@ jobs:
           git pull origin main  # Pull the latest code from GitHub
           npm install  # Install dependencies on EC2
           npm run build  # Build the app if necessary
-          pm2 restart app_name || pm2 start app.js  # Restart or start your Node.js app (make sure pm2 is installed)
-        EOF
+          pm2 restart app_name || pm2 start app.js  # Restart or start your Node.js app (make sure pm2
