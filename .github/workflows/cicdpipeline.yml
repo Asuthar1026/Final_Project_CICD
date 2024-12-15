@@ -64,4 +64,5 @@ jobs:
           git pull origin main  # Pull the latest code from GitHub
           npm install  # Install dependencies on EC2
           npm run build  # Build the app if necessary
-          pm2 restart app_name || pm2 start app.js  # Restart or start your Node.js app (make sure pm2
+          pm2 restart app_name || pm2 start app.js  # Restart or start your Node.js app (make sure pm2 is installed)
+        EOF
