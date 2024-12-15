@@ -1,6 +1,5 @@
 name: Node.js CI/CD Pipeline
 
-# Trigger the workflow when pushing to the 'main' branch or creating pull requests
 on:
   push:
     branches:
@@ -11,18 +10,22 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # Runs on the latest Ubuntu virtual environment
+    runs-on: ubuntu-latest
 
     steps:
     # Step 1: Checkout the repository code
     - name: Checkout code
       uses: actions/checkout@v2
 
+    # Debug: List the contents of the root directory to ensure package.json is there
+    - name: List contents of the root directory
+      run: ls -la
+
     # Step 2: Set up Node.js (use a specific version if necessary)
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '14'  # Use the version of Node.js you need
+        node-version: '14'
 
     # Step 3: Check if package.json exists in the root directory
     - name: Check if package.json exists in the root directory
@@ -32,37 +35,36 @@ jobs:
           exit 1
         fi
 
-    # Step 4: Install dependencies (now in the root directory)
+    # Step 4: Install dependencies
     - name: Install dependencies
       run: |
-        npm install  # Install dependencies in the root directory
+        npm install
 
-    # Step 5: Run tests (now in the root directory)
+    # Step 5: Run tests (if applicable)
     - name: Run tests
       run: |
-        npm test  # Replace with your test command (e.g., jest, mocha)
+        npm test
 
-    # Step 6: Build the application (if necessary)
+    # Step 6: Build application
     - name: Build application
       run: |
-        npm run build  # If you have a build step, e.g., React, Webpack, etc.
+        npm run build
 
     # Step 7: Deploy to EC2 (via SSH)
     - name: Deploy to EC2
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: 'us-east-1'  # Specify the region you're working with
-        EC2_INSTANCE_ID: 'i-00534829b9675ef35'  # Your EC2 Instance ID
-        EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}  # Store your EC2 Public IP in GitHub secrets
-        EC2_USER: 'ec2-user'  # The default EC2 user (change if necessary)
+        AWS_REGION: 'us-east-1'
+        EC2_INSTANCE_ID: 'i-00534829b9675ef35'
+        EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
+        EC2_USER: 'ec2-user'
       run: |
-        # SSH into EC2 and deploy your app
         ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@$EC2_PUBLIC_IP << 'EOF'
-          # Navigate to the directory where your app is stored on the EC2 instance
-          cd /path/to/your/app  # Change this to your app's directory on EC2
-          git pull origin main  # Pull the latest code from GitHub
-          npm install  # Install dependencies on EC2
-          npm run build  # Build the app if necessary
-          pm2 restart app_name || pm2 start app.js  # Restart or start your Node.js app (make sure pm2 is installed)
+          # Navigate to your app directory (if necessary)
+          cd /path/to/your/app
+          git pull origin main
+          npm install
+          npm run build
+          pm2 restart app_name || pm2 start app.js
         EOF
