@@ -1,0 +1,17 @@
+<html>
+<head>
+    <title>MY FINAL PROJRCT</title>
+</head>
+<body>
+    <h1>Welcome to my Final Project</h1>
+    <button onclick="callAPI()">Get API Response</button>
+    <p id="response"></p>
+    <script>
+        async function callAPI() {
+            const response = await fetch('https://<API_GATEWAY_URL>/hello');
+            const data = await response.json();
+            document.getElementById('response').innerText = data.message;
+        }
+    </script>
+</body>
+</html>
