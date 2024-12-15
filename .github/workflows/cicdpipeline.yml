@@ -24,28 +24,31 @@ jobs:
       with:
         node-version: '14'  # Use the version of Node.js you need
 
-    # Step 3: Check if package.json exists
-    - name: Check if package.json exists
+    # Step 3: Check if package.json exists inside the 'simple-node-api' directory
+    - name: Check if package.json exists in the 'simple-node-api' directory
       run: |
         if [ ! -f ./simple-node-api/package.json ]; then
-          echo "package.json not found in the root directory!"
+          echo "package.json not found in the 'simple-node-api' directory!"
           exit 1
         fi
 
-    # Step 4: Install dependencies
+    # Step 4: Install dependencies (inside the 'simple-node-api' subfolder)
     - name: Install dependencies
-            cd simple-node-api
-      run: npm install
+      run: |
+        cd simple-node-api  # Change directory to the subfolder where package.json is located
+        npm install  # Install dependencies
 
-    # Step 5: Run tests
+    # Step 5: Run tests (inside the 'simple-node-api' subfolder)
     - name: Run tests
-      run: cd simple-node-api
-           npm test  # Replace with your test command (e.g., jest, mocha)
+      run: |
+        cd simple-node-api  # Change directory to the subfolder
+        npm test  # Replace with your test command (e.g., jest, mocha)
 
     # Step 6: Build the application (if necessary)
     - name: Build application
-      run: cd simple-node-api
-           npm run build  # If you have a build step, e.g., React, Webpack, etc.
+      run: |
+        cd simple-node-api  # Change directory to the subfolder
+        npm run build  # If you have a build step, e.g., React, Webpack, etc.
 
     # Step 7: Deploy to EC2 (via SSH)
     - name: Deploy to EC2
@@ -59,10 +62,10 @@ jobs:
       run: |
         # SSH into EC2 and deploy your app
         ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@$EC2_PUBLIC_IP << 'EOF'
-          # Install Node.js and dependencies on EC2 if necessary
+          # Navigate to the directory where your app is stored on the EC2 instance
           cd /path/to/your/app  # Change this to your app's directory on EC2
-          git pull origin main  # Pull latest code from GitHub
-          npm install  # Install dependencies
+          git pull origin main  # Pull the latest code from GitHub
+          npm install  # Install dependencies on EC2
           npm run build  # Build the app if necessary
           pm2 restart app_name || pm2 start app.js  # Restart or start your Node.js app (make sure pm2 is installed)
         EOF
