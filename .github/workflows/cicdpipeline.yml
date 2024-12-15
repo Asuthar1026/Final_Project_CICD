@@ -27,13 +27,14 @@ jobs:
     # Step 3: Check if package.json exists
     - name: Check if package.json exists
       run: |
-        if [ ! -f package.json ]; then
+        if [ ! -f C:\Users\khush\OneDrive - Conestoga College\Desktop\astha\4th sem\CICD\Final Project\Final_Project_CICD\simple-node-api/package.json ]; then
           echo "package.json not found in the root directory!"
           exit 1
         fi
 
     # Step 4: Install dependencies
     - name: Install dependencies
+            cd simple-node-api
       run: npm install
 
     # Step 5: Run tests
